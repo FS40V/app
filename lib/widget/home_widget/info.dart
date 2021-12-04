@@ -1,0 +1,130 @@
+import 'package:app/models/models.dart';
+import 'package:app/screens/read.dart';
+import 'package:app/utls/utls.dart';
+import 'package:app/widget/home_widget/rating.dart';
+import 'package:flutter/material.dart';
+
+class BookInformation extends StatefulWidget {
+  BookInformation({
+    Key? key,
+    required this.book,
+    required this.onShowingDetails,
+  }) : super(key: key);
+
+  final Book book;
+
+  final Function(bool) onShowingDetails;
+
+  @override
+  State<BookInformation> createState() => _BookInformationState();
+}
+
+class _BookInformationState extends State<BookInformation> {
+  bool isShowingDetails = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        height: screenHeight(context) * 0.30,
+        width: screenWidth(context) * 0.50,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(25),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            isShowingDetails == true
+                ? BookDetails(details: widget.book.details)
+                : Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Rating(rating: widget.book.rating),
+                          ],
+                        ),
+                        SizedBox(height: 20),
+                        Text(widget.book.title),
+                        Text(widget.book.author),
+                      ],
+                    ),
+                  ),
+            SizedBox(
+              height: 50,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () {
+                        if (isShowingDetails == false) {
+                          isShowingDetails = true;
+                        } else {
+                          isShowingDetails = false;
+                        }
+                        setState(() {});
+                        widget.onShowingDetails(isShowingDetails);
+                      },
+                      child: Container(
+                        child: Center(
+                          child: Text(
+                            'Details',
+                            style: GoogleFonts.poppins(),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(child: GestureDetector(onTap: () {
+                    child:
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(25),
+                          bottomRight: Radius.circular(25),
+                        ),
+                      ),
+                      child: Center(
+                        child: Text('Read',
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                            )),
+                      ),
+                    );
+
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => const read()));
+                  })),
+                ],
+              ),
+            ),
+          ],
+        ));
+  }
+}
+
+class GoogleFonts {
+  static poppins({Color? color, int? fontSize}) {}
+}
+
+class BookDetails extends StatelessWidget {
+  BookDetails({
+    Key? key,
+    required this.details,
+  }) : super(key: key);
+
+  final String details;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Text(details, style: GoogleFonts.poppins(fontSize: 12)),
+    );
+  }
+}
